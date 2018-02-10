@@ -3,10 +3,6 @@ package regulator;
  * Class with main method
  */
 
-import regulator.controller.MainController;
-import regulator.controller.SettingsController;
-import regulator.model.FileComparer;
-import regulator.util.AppPreferences;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,6 +10,10 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import regulator.controller.MainController;
+import regulator.controller.SettingsController;
+import regulator.util.AppPreferences;
+import regulator.util.FileFilter;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -83,7 +83,7 @@ public class MainApp extends Application {
     }
 
     /*open settings window*/
-    public void showSettingsEditDialog(ResourceBundle resourceBundle, FileComparer comparer) {
+    public void showSettingsEditDialog(ResourceBundle resourceBundle, FileFilter filter) {
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
@@ -102,7 +102,7 @@ public class MainApp extends Application {
             // create and adjust controller
             SettingsController controller = loader.getController();
             controller.setDialogStage(dialogStage);
-            controller.setComparer(comparer);
+            controller.setFilter(filter);
             controller.setFieldsValues();
             controller.setResourceBundle(resourceBundle);
 

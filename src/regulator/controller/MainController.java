@@ -2,8 +2,9 @@ package regulator.controller;
 
 
 import regulator.MainApp;
-import regulator.model.FileComparer;
+import regulator.model.FileRenamer;
 import regulator.util.AppPreferences;
+import regulator.util.FileFilter;
 import regulator.util.Formatter;
 import regulator.util.Message;
 import javafx.beans.value.ChangeListener;
@@ -26,10 +27,6 @@ public class MainController implements Initializable {
     @FXML
     private Label firstDirLbl;
 
-    /*label of second directory*/
-    @FXML
-    private Label secondDirLbl;
-
     /*info label*/
     @FXML
     private Label infoLbl;
@@ -41,10 +38,6 @@ public class MainController implements Initializable {
     /*button for firs directory selection*/
     @FXML
     private Button firstDirSelectBtn;
-
-    /*button for second directory selection*/
-    @FXML
-    private Button secondDirSelectBtn;
 
     /*button for change language pocket*/
     @FXML
@@ -78,13 +71,13 @@ public class MainController implements Initializable {
     private ResourceBundle resourceBundle;
 
     /*first choose directory for comparing*/
-    private File firstDirectory;
+    private File directory;
 
-    /*second choose directory for comparing*/
-    private File secondDirectory;
+    /*reference to rename engine class*/
+    private FileRenamer renamer;
 
-    /*reference to compare engine class*/
-    private FileComparer comparer;
+    /*reference to rename engine class*/
+    private FileFilter filter;
 
     /* Reference to the main application*/
     private MainApp mainApp;
@@ -94,7 +87,6 @@ public class MainController implements Initializable {
 
     /*constructor*/
     public MainController() {
-        this.comparer = new FileComparer();
         if (Desktop.isDesktopSupported()) {
             this.desktop = Desktop.getDesktop();
         }
@@ -112,58 +104,33 @@ public class MainController implements Initializable {
     private void choseFirstDirectory(){
         /*not null reportName means that
         some compares happens before.
-        reset comparer in such case*/
-        if (this.comparer.getReportName()!= null){
-            clear();
-        }
+        reset renamer in such case*/
+//        if (this.renamer.getReportName()!= null){
+//            clear();
+//        }
         File directory = chooseDirectory();
         if (directory != null) {
-            this.firstDirectory = directory;
+            this.directory = directory;
             AppPreferences.setDirectory(directory.getParentFile());
             setTextDirLabel(this.firstDirLbl, "FirstDirectory", getDirInfo(directory));
             updateTextInfoLbl();
         }
     }
 
-    /*choose second directory*/
-    @FXML
-    private void choseSecondDirectory(){
-        /*not null reportName means that
-        some compares happens before.
-        reset comparer in such case*/
-        if (this.comparer.getReportName()!= null){
-            clear();
-        }
-        File directory = chooseDirectory();
-        if (directory != null) {
-            this.secondDirectory = directory;
-            AppPreferences.setDirectory(directory.getParentFile());
-            setTextDirLabel(this.secondDirLbl, "SecondDirectory", "" + getDirInfo(directory));
-            updateTextInfoLbl();
-        }
-    }
 
     /*start comparing procedure*/
     @FXML
     private void executeComparing(){
-        if (this.firstDirectory != null) {
-            this.comparer.setStartDirectoryName(this.firstDirectory.getAbsolutePath());
-            if (this.secondDirectory != null) {
-                this.comparer.setEndDirectoryName(this.secondDirectory.getAbsolutePath());
-            }
-        }else {
-             /*if selected single directory save it as firstDirectory*/
-            if (this.secondDirectory != null) {
-                this.comparer.setStartDirectoryName(this.secondDirectory.getAbsolutePath());
-            }
+        if (this.directory != null) {
+            this.renamer = new FileRenamer(this.directory.getAbsolutePath());
         }
 
-        this.comparer.setResourceBundle(this.resourceBundle);
+        this.renamer.setResourceBundle(this.resourceBundle);
         try{
-            if(this.comparer.compare()) {
-                setTextDirLabel(this.resultLbl, "Result", getFileInfo(this.comparer.getReportName()));
-                setVisibility(true);
-            }
+//            if(this.renamer.compare()) {
+//                setTextDirLabel(this.resultLbl, "Result", getFileInfo(this.renamer.getReportName()));
+//                setVisibility(true);
+//            }
         }
         catch (Exception e){
             Message.errorAlert(this.resourceBundle,e);
@@ -202,7 +169,6 @@ public class MainController implements Initializable {
     private void updateLocalText(){
         updateTextInfoLbl();
         this.firstDirSelectBtn.setText(this.resourceBundle.getString("Select"));
-        this.secondDirSelectBtn.setText(this.resourceBundle.getString("Select"));
         this.changeLocalButton.setText(this.resourceBundle.getString("ChangeLocal"));
         this.executeButton.setText(this.resourceBundle.getString("Compare"));
         this.clearBtn.setText(this.resourceBundle.getString("Clear"));
@@ -213,24 +179,18 @@ public class MainController implements Initializable {
     }
 
     /*updates text for infoLbl Label depending of
-    * firstDirectory and secondDirectory directories*/
+    * directory and secondDirectory directories*/
     private void updateTextInfoLbl(){
-        setTextDirLabel(firstDirLbl,"FirstDirectory",getDirInfo(firstDirectory));
-        setTextDirLabel(secondDirLbl,"SecondDirectory",getDirInfo(secondDirectory));
-        String reportName = this.comparer.getReportName();
-        if(reportName != null) {
-            setTextDirLabel(resultLbl, "Result", getFileInfo(this.comparer.getReportName()));
-        }
-        if ((firstDirectory ==null)&&(secondDirectory ==null)){
+        setTextDirLabel(firstDirLbl,"FirstDirectory",getDirInfo(directory));
+//        String reportName = this.renamer.getReportName();
+//        if(reportName != null) {
+//            setTextDirLabel(resultLbl, "Result", getFileInfo(this.renamer.getReportName()));
+//        }
+        if (directory ==null){
             infoLbl.setText(resourceBundle.getString("InfoDefault"));
         }
-        else if ((firstDirectory ==null)||(secondDirectory ==null)){
-            infoLbl.setText(resourceBundle.getString("CompareSingleDirectory"));
-        }else if(firstDirectory.equals(secondDirectory)){
-            infoLbl.setText(resourceBundle.getString("CompareSingleDirectory"));
-        }
         else {
-            infoLbl.setText(resourceBundle.getString("CompareTwoDirectories"));
+            infoLbl.setText(resourceBundle.getString("NormaliseFiles"));
         }
     }
 
@@ -263,7 +223,7 @@ public class MainController implements Initializable {
     private void openResult(){
         try {
             assert this.desktop != null;
-            this.desktop.open(new File(this.comparer.getReportName()));
+//            this.desktop.open(new File(this.renamer.getReportName()));
         } catch (Exception e) {
             Message.errorAlert(this.resourceBundle,e);
         }
@@ -271,16 +231,15 @@ public class MainController implements Initializable {
 
     /*set visibility to open result button and label*/
     private void setVisibility(boolean visibility){
-        this.resultLbl.setVisible(visibility);
-        this.openResultBtn.setVisible(visibility);
+//        this.resultLbl.setVisible(visibility);
+//        this.openResultBtn.setVisible(visibility);
     }
 
     /*clear fields to default*/
     @FXML
     private void clear(){
-        this.comparer.cleanFields();
-        this.firstDirectory = null;
-        this.secondDirectory = null;
+//        this.renamer.cleanFields();
+        this.directory = null;
         updateTextInfoLbl();
         setVisibility(false);
     }
@@ -288,7 +247,7 @@ public class MainController implements Initializable {
     /*open settings window*/
     @FXML
     private void openSettings(){
-        mainApp.showSettingsEditDialog(this.resourceBundle, this.comparer);
+        mainApp.showSettingsEditDialog(this.resourceBundle, this.filter);
     }
 
     /*show application info*/
@@ -308,11 +267,9 @@ public class MainController implements Initializable {
     {
         double height = this.mainApp.getPrimaryStage().getHeight();
         this.firstDirLbl.setStyle("-fx-font-size:"+ Formatter.getTextSize(height)+";");
-        this.secondDirLbl.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.infoLbl.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.resultLbl.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.firstDirSelectBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
-        this.secondDirSelectBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.changeLocalButton.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.executeButton.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.openResultBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");

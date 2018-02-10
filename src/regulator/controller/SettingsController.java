@@ -1,11 +1,5 @@
 package regulator.controller;
 
-import regulator.model.FileComparer;
-import regulator.model.FileInfo;
-import regulator.util.AppPreferences;
-import regulator.util.FileFilter;
-import regulator.util.Formatter;
-import regulator.util.Message;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,6 +7,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import regulator.model.FileInfo;
+import regulator.util.AppPreferences;
+import regulator.util.FileFilter;
+import regulator.util.Formatter;
+import regulator.util.Message;
 
 import java.util.ResourceBundle;
 
@@ -22,8 +21,8 @@ public class SettingsController {
     /*window stage*/
     private Stage dialogStage;
 
-    /*file comparer*/
-    private FileComparer comparer;
+    /*file filter*/
+    private FileFilter filter;
 
     /*language pocket*/
     private ResourceBundle resourceBundle;
@@ -81,16 +80,15 @@ public class SettingsController {
         this.resourceBundle = resourceBundle;
     }
 
-    /*set comparer*/
-    public void setComparer(FileComparer comparer) {
-        this.comparer = comparer;
+    /*set filter*/
+    public void setFilter(FileFilter filter) {
+        this.filter = filter;
     }
 
     /*set values of class fields*/
     public void setFieldsValues(){
-        FileFilter fileFilter = comparer.getFilter();
-        if (fileFilter != null) {
-            this.filterTextField.setText(Formatter.getArrayAsString(fileFilter.getExtensions()));
+        if (this.filter != null) {
+            this.filterTextField.setText(Formatter.getArrayAsString(this.filter.getExtensions()));
         }
         this.minLengthWordField.setText(String.valueOf(FileInfo.getMinLength()));
         this.absolutePathRadBtn.setSelected(AppPreferences.getShowAbsolutePath());
@@ -125,9 +123,8 @@ public class SettingsController {
             if (!Formatter.stringIsEmpty(this.filterTextField.getText())){
                 extensions = this.filterTextField.getText().split(" ");
             }
-            FileFilter filter = new FileFilter(extensions);
+            this.filter = new FileFilter(extensions);
             AppPreferences.setFilterExtensions(extensions);
-            this.comparer.setFilter(filter);
             FileInfo.setMinLength(Integer.valueOf(this.minLengthWordField.getText()));
             FileInfo.setShowAbsolutePath(this.absolutePathRadBtn.isSelected());
             AppPreferences.setMinStringLength(this.minLengthWordField.getText());
