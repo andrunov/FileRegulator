@@ -1,0 +1,24 @@
+
+.button {
+-fx-border-color: brown;
+-fx-border-width: 2;
+-fx-background-radius: 5;
+-fx-border-radius: 5;
+-fx-background-color: #77c7c9;
+-fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+/*-fx-font-size: 14pt;*/
+-fx-font-weight: bold;
+-fx-text-fill: darkred;
+}
+
+.button:hover {
+    -fx-background-color: darkgrey;
+}
+
+.button:focused {
+    -fx-border-color: brown;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
