@@ -169,7 +169,7 @@ public class FileRenamer
 
     public static void main(String[] args)    {
 //        sourcePath = "D:\\MUSIC\\01\\Старинные вальсы";
-        FileRenamer renamer = new FileRenamer("D:\\MUSIC\\01\\1985");
+        FileRenamer renamer = new FileRenamer("D:\\MUSIC\\01\\1995");
         renamer.fillPostfix();
         renamer.checkAllFiles();
         renamer.renameAllFiles();
@@ -213,7 +213,7 @@ public class FileRenamer
     {
         int prefix = getPrefix(fileName);
         String postFix = getPostfix(fileName);
-        return  ((prefix > 0)&&(postFix.equals(postfix)));
+        return  ((prefix > 0)&&(postFix.equals(postfix))&&(!this.busyPositions.contains(prefix)));
     }
 
 
