@@ -52,6 +52,7 @@ public class FileRenamer
         this.successRenames = new ArrayList<>();
         this.satisfyNames = new ArrayList<>();
         this.unSatisfyNames = new ArrayList<>();
+        this.createPostfix();
     }
 
     /*return second prefix of file, must contains number of files order (01, 36, 125)
@@ -125,7 +126,7 @@ public class FileRenamer
     }
 
     /*fill static field postfix */
-    private void fillPostfix(){
+    private void createPostfix(){
         String result = this.sourcePath.substring(this.sourcePath.lastIndexOf('\\')+1);
         this.postfix = "(" + result + ")";
     }
@@ -169,25 +170,31 @@ public class FileRenamer
 
     public static void main(String[] args)    {
 //        sourcePath = "D:\\MUSIC\\01\\Старинные вальсы";
-        FileRenamer renamer = new FileRenamer("D:\\MUSIC\\01\\1995");
-        renamer.fillPostfix();
-        renamer.checkAllFiles();
-        renamer.renameAllFiles();
-        System.out.println(renamer.writeResult());
+        System.out.println(renameCycle("D:\\MUSIC\\01").toString());
+
     }
 
 
-    /*first pass of files list, find satisfied and unsatisfied file names*/
-    private void checkAllFiles(){
-        for (String fileName : new File(this.sourcePath).list()){
-            if (checkFileName(fileName)){
-                this.satisfyNames.add( fileName);
-                this.busyPositions.add(getPrefix(fileName));
+    private static StringBuilder renameCycle(String parentPath){
+    StringBuilder report = new StringBuilder();
+        FileRenamer renamer = new FileRenamer(parentPath);
+        for (String fileName : new File(parentPath).list()){
+            String absPath = parentPath + "\\" + fileName;
+            if (new File(absPath).isDirectory()){
+                report.append(renameCycle(absPath));
+            }
+            else if (renamer.checkFileName(fileName)){
+                renamer.satisfyNames.add( fileName);
+                renamer.busyPositions.add(renamer.getPrefix(fileName));
             }else {
-                this.unSatisfyNames.add(fileName);
+                renamer.unSatisfyNames.add(fileName);
             }
         }
+        renamer.renameAllFiles();
+        report.append(renamer.writeResult()).append("\r\n");
+        return report;
     }
+
 
     /*second pass of files list, rename unsatisfied names*/
     private void renameAllFiles(){
@@ -213,25 +220,12 @@ public class FileRenamer
     {
         int prefix = getPrefix(fileName);
         String postFix = getPostfix(fileName);
-        return  ((prefix > 0)&&(postFix.equals(postfix))&&(!this.busyPositions.contains(prefix)));
-    }
-
-
-
-    /*extract files that fit to extension*/
-    private List<String> getFittingFiles(String[] filelist){
-        List<String> result = new ArrayList<>();
-        for (String file : filelist){
-            if (file.substring(file.lastIndexOf("."),file.length()).equalsIgnoreCase(".mp3")){
-                result.add(file);
-            }
-        }
-        return result;
+        return  ((prefix > 0)&&(postFix.equals(this.postfix))&&(!this.busyPositions.contains(prefix)));
     }
 
     /*write result of rename files */
-    private String writeResult(){
-        StringBuilder sb = new StringBuilder();
+    private StringBuilder writeResult(){
+        StringBuilder sb = new StringBuilder("Folder: ").append(this.sourcePath);
         sb.append(String.format("\r\n%s%d%s","*** analyzed ", (this.satisfyNames.size()+ this.unSatisfyNames.size()), " files ***"));
         sb.append(String.format("\r\n%s%d%s", "*** renames ", this.successRenames.size(), " files ***"));
         for (String fileName : this.successRenames){
@@ -245,7 +239,8 @@ public class FileRenamer
         for (String fileName : this.satisfyNames){
             sb.append(String.format("\r\n%s%s%s", this.sourcePath, "\\", fileName));
         }
-        return sb.toString();
+        sb.append("\r\n");
+        return sb;
     }
 
 
