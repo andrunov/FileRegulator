@@ -175,6 +175,7 @@ public class FileRenamer
     }
 
 
+    /*main cycle of program. Recursive select, check and renames all files in selected folders*/
     private static StringBuilder renameCycle(String parentPath){
     StringBuilder report = new StringBuilder();
         FileRenamer renamer = new FileRenamer(parentPath);
