@@ -125,10 +125,16 @@ public class FileRenamer
         return string.length()-1;
     }
 
-    /*fill static field postfix */
+    /*fill field postfix */
     private void createPostfix(){
         String result = this.sourcePath.substring(this.sourcePath.lastIndexOf('\\')+1);
-        this.postfix = "(" + result + ")";
+        try {
+            Integer.parseInt(result);
+            this.postfix = "(" + result + ")";
+        }
+        catch (NumberFormatException e){
+            this.postfix = null;
+        }
     }
 
     /*rename file to new name*/
@@ -145,12 +151,12 @@ public class FileRenamer
     /*gets old file name and create new file name*/
     private String getNewFileName(String oldFileName)
     {
-        String result = null;
+        String result;
         String extension = oldFileName.substring(oldFileName.lastIndexOf('.'));
         String name = oldFileName.substring(0,oldFileName.lastIndexOf('.'));
         name = name.substring(findFirstLetter(name));
         int prefix = createNewPrefix();
-        if (getPostfix(oldFileName).equals(this.postfix)){
+        if ((this.postfix == null)||(getPostfix(oldFileName).equals(this.postfix))){
             result = String.format("%02d %s%s",prefix, name, extension);
         }else {
             result = String.format("%02d %s %s%s",prefix, name, this.postfix, extension);
@@ -219,9 +225,14 @@ public class FileRenamer
     /*check that filename has required pre- and post-fix*/
     private boolean checkFileName(String fileName)
     {
+        boolean result;
         int prefix = getPrefix(fileName);
-        String postFix = getPostfix(fileName);
-        return  ((prefix > 0)&&(postFix.equals(this.postfix))&&(!this.busyPositions.contains(prefix)));
+        result = ((prefix > 0)&&(!this.busyPositions.contains(prefix)));
+        if (this.postfix != null){
+            String postFix = getPostfix(fileName);
+            result =  result&&(postFix.equals(this.postfix));
+        }
+        return result;
     }
 
     /*write result of rename files */
