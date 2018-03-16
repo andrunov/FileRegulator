@@ -1,14 +1,14 @@
 
 .button {
--fx-border-color: brown;
+-fx-border-color: #050261;
 -fx-border-width: 2;
 -fx-background-radius: 5;
 -fx-border-radius: 5;
--fx-background-color: #77c7c9;
+-fx-background-color: rgb(147, 193, 231);
 -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
 /*-fx-font-size: 14pt;*/
 -fx-font-weight: bold;
--fx-text-fill: darkred;
+-fx-text-fill: #020563;
 }
 
 .button:hover {
@@ -16,7 +16,7 @@
 }
 
 .button:focused {
-    -fx-border-color: brown;
+    -fx-border-color: #3834a5;
     -fx-border-width: 2;
     -fx-border-radius: 5;
     -fx-background-radius: 5;

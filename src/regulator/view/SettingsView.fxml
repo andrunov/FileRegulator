@@ -13,9 +13,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="160.0" prefWidth="600.0" stylesheets="@../style/Custom.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="regulator.controller.SettingsController">
+<AnchorPane prefHeight="120.0" prefWidth="600.0" stylesheets="@../style/Custom.css" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="regulator.controller.SettingsController">
    <children>
-      <SplitPane layoutX="-16.0" layoutY="-42.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="600.0" styleClass="background" stylesheets="@../style/Custom.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane layoutX="-16.0" layoutY="-42.0" orientation="VERTICAL" prefHeight="120.0" prefWidth="600.0" styleClass="background" stylesheets="@../style/Custom.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
             <GridPane prefHeight="205.0" prefWidth="598.0">
               <columnConstraints>
@@ -25,7 +25,6 @@
               </columnConstraints>
               <rowConstraints>
                   <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
@@ -40,27 +39,12 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <Label fx:id="minLengthLbl" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="%MinLength" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <TextField fx:id="minLengthWordField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="22.0" prefWidth="404.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </GridPane.margin>
-                  </TextField>
                   <Button fx:id="questionFilter" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showFilterInfo" text="%Info" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </GridPane.margin>
                   </Button>
-                  <Button fx:id="questionMinLength" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showMinLengthInfo" text="%Info" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </GridPane.margin>
-                  </Button>
-                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <children>
                         <RadioButton fx:id="relativePathRadBtn" mnemonicParsing="false" selected="true" text="%RelativePath">
                            <HBox.margin>
@@ -82,21 +66,21 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </GridPane.margin>
                   </Button>
-                  <Label fx:id="pathLbl" text="%PathInReport" GridPane.rowIndex="3">
+                  <Label fx:id="pathLbl" text="%PathInReport" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </GridPane.margin>
                   </Label>
                   <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                      <children>
-                        <Button fx:id="saveBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#save" stylesheets="@../style/CustomGray.css"  text="%Save">
+                        <Button fx:id="saveBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#save" stylesheets="@../style/CustomGray.css" text="%Save">
                            <HBox.margin>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </HBox.margin>
                         </Button>
                      </children>
                   </HBox>
-                  <Button fx:id="questionPath" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showPathInfo" text="%Info" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                  <Button fx:id="questionPath" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showPathInfo" text="%Info" GridPane.columnIndex="2" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </GridPane.margin>

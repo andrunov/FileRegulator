@@ -67,10 +67,6 @@ public class SettingsController {
     @FXML
     private Label filterLbl;
 
-    /*label for for min length field*/
-    @FXML
-    private Label minLengthLbl;
-
     /*label for for radiobuttons absolutePathRadBtn and relativePathRadBtn*/
     @FXML
     private Label pathLbl;
@@ -90,7 +86,6 @@ public class SettingsController {
         if (this.filter != null) {
             this.filterTextField.setText(Formatter.getArrayAsString(this.filter.getExtensions()));
         }
-        this.minLengthWordField.setText(String.valueOf(FileInfo.getMinLength()));
         this.absolutePathRadBtn.setSelected(AppPreferences.getShowAbsolutePath());
     }
 
@@ -184,7 +179,6 @@ public class SettingsController {
         this.questionFilter.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.questionMinLength.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.filterLbl.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
-        this.minLengthLbl.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.pathLbl.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.absolutePathRadBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.relativePathRadBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");

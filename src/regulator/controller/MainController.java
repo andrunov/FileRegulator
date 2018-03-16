@@ -101,7 +101,7 @@ public class MainController implements Initializable {
 
     /*choose first directory*/
     @FXML
-    private void choseFirstDirectory(){
+    private void choseDirectory(){
         /*not null reportName means that
         some compares happens before.
         reset renamer in such case*/

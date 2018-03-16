@@ -1,37 +1,37 @@
 .background {
--fx-background-color: rgba(148, 182, 222, 0.67);
+-fx-background-color: rgb(223, 236, 236);
 }
 
-.hbox {
-    -fx-background-color: rgba(57, 75, 107, 0.8);
-}
+/*.hbox {*/
+    /*-fx-background-color: rgba(165, 210, 111, 0.64)*/
+/*}*/
 
 .label {
     -fx-font-size: 10pt;
     -fx-font-family: "Segoe UI Semibold";
-    -fx-text-fill: midnightblue;
+    -fx-text-fill: #0c0469;
     -fx-opacity: 0.9;
     -fx-font-weight: bold;
 }
 
 
 .button {
--fx-border-color: navy;
+-fx-border-color: rgb(5, 2, 83);
 -fx-border-width: 2;
 -fx-background-radius: 5;
 -fx-border-radius: 5;
--fx-background-color: aliceblue;
+-fx-background-color: rgb(213, 213, 213);
 -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
 /*-fx-font-size: 12pt;*/
 -fx-font-weight: bold;
 }
 
 .button:hover {
-    -fx-background-color: darkgrey;
+    -fx-background-color: #989898;
 }
 
 .button:focused {
-    -fx-border-color: brown;
+    -fx-border-color: #080248;
     -fx-border-width: 2;
     -fx-border-radius: 5;
     -fx-background-radius: 5;
@@ -43,7 +43,7 @@
 
 .radio-button .radio {
     -fx-border-width: 1px;
-    -fx-border-color: navy;
+    -fx-border-color: rgba(67, 68, 65, 0.85);
     -fx-background-color: white;
     -fx-background-image: null;
     -fx-border-radius: 15px;
