@@ -44,20 +44,6 @@ public class AppPreferences {
         prefs.put("filterExtensions", Formatter.getArrayAsString(extensions));
     }
 
-    /*get minimum word length*/
-    public static int getMinStringLength() {
-        Preferences prefs = Preferences.userNodeForPackage(AppPreferences.class);
-        int minLength = 0;
-        try {
-            minLength = Integer.parseInt(prefs.get("minStringLength", "1"));
-        }catch (NumberFormatException e){
-            e.printStackTrace();
-        }
-        if (minLength < 1){
-            minLength = 1;
-        }
-        return minLength;
-    }
 
     /*set minimum word length*/
     public static void setMinStringLength(String minStringLength) {

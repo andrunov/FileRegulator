@@ -1,5 +1,8 @@
 package regulator.model;
 
+import regulator.util.FileFilter;
+import regulator.util.Writer;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,16 +39,11 @@ public class FileRenamer
     /*list of files with unsatisfied names*/
     private List<String> unSatisfyNames;
 
-    public ResourceBundle getResourceBundle() {
-        return resourceBundle;
-    }
-
-    public void setResourceBundle(ResourceBundle resourceBundle) {
-        this.resourceBundle = resourceBundle;
-    }
+    /*filter of file types*/
+    private FileFilter filter;
 
     /*constructor*/
-    public FileRenamer(String sourcePath) {
+    public FileRenamer(String sourcePath, String[] extensions, ResourceBundle resourceBundle) {
         this.sourcePath = sourcePath;
         this.busyPositions = new ArrayList<>();
         this.fallingRenames = new ArrayList<>();
@@ -53,6 +51,8 @@ public class FileRenamer
         this.satisfyNames = new ArrayList<>();
         this.unSatisfyNames = new ArrayList<>();
         this.createPostfix();
+        this.filter = new FileFilter(extensions);
+        this.resourceBundle = resourceBundle;
     }
 
     /*return second prefix of file, must contains number of files order (01, 36, 125)
@@ -174,31 +174,29 @@ public class FileRenamer
         return counter;
     }
 
-    public static void main(String[] args)    {
-//        sourcePath = "D:\\MUSIC\\01\\Старинные вальсы";
-        System.out.println(renameCycle("D:\\MUSIC\\01").toString());
-
+    /* method for start program logic from outside */
+    public void execute(String reportPath){
+        Writer writer = new Writer("UTF8",reportPath);
+        writer.write(this.renameCycle().toString(), this.resourceBundle);
     }
 
-
     /*main cycle of program. Recursive select, check and renames all files in selected folders*/
-    private static StringBuilder renameCycle(String parentPath){
+    private StringBuilder renameCycle(){
     StringBuilder report = new StringBuilder();
-        FileRenamer renamer = new FileRenamer(parentPath);
-        for (String fileName : new File(parentPath).list()){
-            String absPath = parentPath + "\\" + fileName;
+        for (String fileName : new File(this.sourcePath).list()){
+            String absPath = this.sourcePath + "\\" + fileName;
             if (new File(absPath).isDirectory()){
-                report.append(renameCycle(absPath));
+                report.append(new FileRenamer(absPath, this.filter.getExtensions(),this.resourceBundle).renameCycle());
             }
-            else if (renamer.checkFileName(fileName)){
-                renamer.satisfyNames.add( fileName);
-                renamer.busyPositions.add(renamer.getPrefix(fileName));
+            else if (checkFileName(fileName)){
+                this.satisfyNames.add( fileName);
+                this.busyPositions.add(getPrefix(fileName));
             }else {
-                renamer.unSatisfyNames.add(fileName);
+                this.unSatisfyNames.add(fileName);
             }
         }
-        renamer.renameAllFiles();
-        report.append(renamer.writeResult()).append("\r\n");
+        renameAllFiles();
+        report.append(writeResult()).append("\r\n");
         return report;
     }
 
@@ -212,12 +210,12 @@ public class FileRenamer
                 if (renameFile(fileName,newFileName))
                 {
                     this.busyPositions.add(getPrefix(newFileName));
-                    this.successRenames.add(String.format("%s%s%s %s %s%s%s",this.sourcePath, "\\" ,fileName,"==>" , this.sourcePath, "\\" ,newFileName));
+                    this.successRenames.add(String.format("%s %s %s",fileName,"==>" , newFileName));
                 }
             }
             catch (IOException e)
             {
-                this.fallingRenames.add(String.format("%s%s%s",this.sourcePath, "\\" ,fileName));
+                this.fallingRenames.add(fileName);
             }
         }
     }
@@ -237,23 +235,24 @@ public class FileRenamer
 
     /*write result of rename files */
     private StringBuilder writeResult(){
-        StringBuilder sb = new StringBuilder("Folder: ").append(this.sourcePath);
-        sb.append(String.format("\r\n%s%d%s","*** analyzed ", (this.satisfyNames.size()+ this.unSatisfyNames.size()), " files ***"));
-        sb.append(String.format("\r\n%s%d%s", "*** renames ", this.successRenames.size(), " files ***"));
+        StringBuilder sb = new StringBuilder("***********************************************************************************************************");
+        sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Folder") +" : " + this.sourcePath),"*"));
+        sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Analyzed") + " : " + (this.satisfyNames.size()+ this.unSatisfyNames.size()) + " : " + this.resourceBundle.getString("files")),"*"));
+        sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Renamed") +" : " + this.successRenames.size() + " : " + this.resourceBundle.getString("files")),"*"));
         for (String fileName : this.successRenames){
-            sb.append(String.format("\r\n%s",fileName));
+            sb.append(String.format("\r\n%-5s%-100.100s%2s","+",fileName, "*"));
         }
-        sb.append(String.format("\r\n%s%d%s", "*** refuse renames " , this.fallingRenames.size(), " files ***"));
+        sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Refuse") +" : " + this.fallingRenames.size() + " : " + this.resourceBundle.getString("files")),"*"));
         for (String fileName : this.fallingRenames){
-            sb.append(String.format("\r\n%s%s%s", this.sourcePath, "\\", fileName));
+            sb.append(String.format("\r\n%-5s%-100.100s%2s","+",fileName, "*"));
         }
-        sb.append(String.format("\r\n%s%d", "*** satisfy files and so no renames ", this.satisfyNames.size()));
-        for (String fileName : this.satisfyNames){
-            sb.append(String.format("\r\n%s%s%s", this.sourcePath, "\\", fileName));
-        }
+        sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Satysfied") +" : " + this.satisfyNames.size() + " : " + this.resourceBundle.getString("files")),"*"));
+//        for (String fileName : this.satisfyNames){
+//            sb.append(String.format("\r\n%-5s%-100.100s%2s","+",fileName, "*"));
+//        }
+        sb.append("\r\n***********************************************************************************************************");
         sb.append("\r\n");
         return sb;
     }
-
 
 }

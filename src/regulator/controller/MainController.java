@@ -25,7 +25,7 @@ public class MainController implements Initializable {
 
     /*label of first directory*/
     @FXML
-    private Label firstDirLbl;
+    private Label dirLbl;
 
     /*info label*/
     @FXML
@@ -73,10 +73,7 @@ public class MainController implements Initializable {
     /*first choose directory for comparing*/
     private File directory;
 
-    /*reference to rename engine class*/
-    private FileRenamer renamer;
-
-    /*reference to rename engine class*/
+    /*reference to Filter class*/
     private FileFilter filter;
 
     /* Reference to the main application*/
@@ -85,11 +82,16 @@ public class MainController implements Initializable {
     /*desktop uses for open files just from JavaFX application*/
     private Desktop desktop;
 
+    /*report path*/
+    private String reportName;
+
     /*constructor*/
     public MainController() {
         if (Desktop.isDesktopSupported()) {
             this.desktop = Desktop.getDesktop();
         }
+        String[] extensions = AppPreferences.getFilterExtensions();
+        this.filter = new FileFilter(extensions);
     }
 
     /**
@@ -105,36 +107,37 @@ public class MainController implements Initializable {
         /*not null reportName means that
         some compares happens before.
         reset renamer in such case*/
-//        if (this.renamer.getReportName()!= null){
-//            clear();
-//        }
+        if (this.reportName!= null){
+            clear();
+        }
         File directory = chooseDirectory();
         if (directory != null) {
             this.directory = directory;
             AppPreferences.setDirectory(directory.getParentFile());
-            setTextDirLabel(this.firstDirLbl, "FirstDirectory", getDirInfo(directory));
+            setTextDirLabel(this.dirLbl, "Directory", getDirInfo(directory));
             updateTextInfoLbl();
+            this.reportName = directory + "\\report.txt";
         }
     }
 
 
     /*start comparing procedure*/
     @FXML
-    private void executeComparing(){
+    private void executeRegulate(){
         if (this.directory != null) {
-            this.renamer = new FileRenamer(this.directory.getAbsolutePath());
+            FileRenamer renamer = new FileRenamer(this.directory.getAbsolutePath(),
+                                            this.filter.getExtensions(),
+                                            this.resourceBundle);
+            try{
+                renamer.execute(this.reportName);
+                setTextDirLabel(this.resultLbl, "Result", getFileInfo(this.reportName));
+                setVisibility(true);
+            }
+            catch (Exception e){
+                Message.errorAlert(this.resourceBundle,e);
+            }
         }
 
-        this.renamer.setResourceBundle(this.resourceBundle);
-        try{
-//            if(this.renamer.compare()) {
-//                setTextDirLabel(this.resultLbl, "Result", getFileInfo(this.renamer.getReportName()));
-//                setVisibility(true);
-//            }
-        }
-        catch (Exception e){
-            Message.errorAlert(this.resourceBundle,e);
-        }
     }
 
     /*open dialog to choose directory*/
@@ -170,7 +173,7 @@ public class MainController implements Initializable {
         updateTextInfoLbl();
         this.firstDirSelectBtn.setText(this.resourceBundle.getString("Select"));
         this.changeLocalButton.setText(this.resourceBundle.getString("ChangeLocal"));
-        this.executeButton.setText(this.resourceBundle.getString("Compare"));
+        this.executeButton.setText(this.resourceBundle.getString("Regulate"));
         this.clearBtn.setText(this.resourceBundle.getString("Clear"));
         this.openResultBtn.setText(this.resourceBundle.getString("Open"));
         this.settingsBtn.setText(this.resourceBundle.getString("Settings"));
@@ -181,11 +184,11 @@ public class MainController implements Initializable {
     /*updates text for infoLbl Label depending of
     * directory and secondDirectory directories*/
     private void updateTextInfoLbl(){
-        setTextDirLabel(firstDirLbl,"FirstDirectory",getDirInfo(directory));
-//        String reportName = this.renamer.getReportName();
-//        if(reportName != null) {
-//            setTextDirLabel(resultLbl, "Result", getFileInfo(this.renamer.getReportName()));
-//        }
+        setTextDirLabel(dirLbl,"Directory",getDirInfo(directory));
+        String reportName = this.reportName;
+        if(reportName != null) {
+            setTextDirLabel(resultLbl, "Result", getFileInfo(this.reportName));
+        }
         if (directory ==null){
             infoLbl.setText(resourceBundle.getString("InfoDefault"));
         }
@@ -223,7 +226,7 @@ public class MainController implements Initializable {
     private void openResult(){
         try {
             assert this.desktop != null;
-//            this.desktop.open(new File(this.renamer.getReportName()));
+            this.desktop.open(new File(this.reportName));
         } catch (Exception e) {
             Message.errorAlert(this.resourceBundle,e);
         }
@@ -231,14 +234,13 @@ public class MainController implements Initializable {
 
     /*set visibility to open result button and label*/
     private void setVisibility(boolean visibility){
-//        this.resultLbl.setVisible(visibility);
-//        this.openResultBtn.setVisible(visibility);
+        this.resultLbl.setVisible(visibility);
+        this.openResultBtn.setVisible(visibility);
     }
 
     /*clear fields to default*/
     @FXML
     private void clear(){
-//        this.renamer.cleanFields();
         this.directory = null;
         updateTextInfoLbl();
         setVisibility(false);
@@ -266,7 +268,7 @@ public class MainController implements Initializable {
     public ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) ->
     {
         double height = this.mainApp.getPrimaryStage().getHeight();
-        this.firstDirLbl.setStyle("-fx-font-size:"+ Formatter.getTextSize(height)+";");
+        this.dirLbl.setStyle("-fx-font-size:"+ Formatter.getTextSize(height)+";");
         this.infoLbl.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.resultLbl.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.firstDirSelectBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");

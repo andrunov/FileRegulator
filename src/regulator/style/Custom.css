@@ -1,9 +1,9 @@
 .background {
--fx-background-color: rgb(223, 236, 236);
+-fx-background-color: #e6e7b8;
 }
 
 /*.hbox {*/
-    /*-fx-background-color: rgba(165, 210, 111, 0.64)*/
+    /*-fx-background-color: lightgray;*/
 /*}*/
 
 .label {
@@ -20,7 +20,7 @@
 -fx-border-width: 2;
 -fx-background-radius: 5;
 -fx-border-radius: 5;
--fx-background-color: rgb(213, 213, 213);
+-fx-background-color: rgb(181, 222, 222);
 -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
 /*-fx-font-size: 12pt;*/
 -fx-font-weight: bold;

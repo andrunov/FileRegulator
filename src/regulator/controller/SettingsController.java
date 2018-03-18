@@ -7,7 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import regulator.model.FileInfo;
 import regulator.util.AppPreferences;
 import regulator.util.FileFilter;
 import regulator.util.Formatter;
@@ -55,10 +54,6 @@ public class SettingsController {
     @FXML
     private Button questionPath;
 
-    /*radio button for set absolute path in report*/
-    @FXML
-    private RadioButton absolutePathRadBtn;
-
     /*radio button for set relative path in report*/
     @FXML
     private RadioButton relativePathRadBtn;
@@ -86,7 +81,6 @@ public class SettingsController {
         if (this.filter != null) {
             this.filterTextField.setText(Formatter.getArrayAsString(this.filter.getExtensions()));
         }
-        this.absolutePathRadBtn.setSelected(AppPreferences.getShowAbsolutePath());
     }
 
 
@@ -120,10 +114,6 @@ public class SettingsController {
             }
             this.filter = new FileFilter(extensions);
             AppPreferences.setFilterExtensions(extensions);
-            FileInfo.setMinLength(Integer.valueOf(this.minLengthWordField.getText()));
-            FileInfo.setShowAbsolutePath(this.absolutePathRadBtn.isSelected());
-            AppPreferences.setMinStringLength(this.minLengthWordField.getText());
-            AppPreferences.setShowAbsolutePath(this.absolutePathRadBtn.isSelected());
             AppPreferences.setSettingsWindowHeight(this.dialogStage.getHeight());
             AppPreferences.setSettingsWindowWidth(this.dialogStage.getWidth());
             dialogStage.close();
@@ -151,18 +141,8 @@ public class SettingsController {
     /*check that user input correct data*/
     private boolean isInputValid() {
         String filterExtensions = this.filterTextField.getText();
-        String minLength = this.minLengthWordField.getText();
         if ((!filterExtensions.matches("[a-zA-Z0-9\\s]+"))&&(!filterExtensions.isEmpty())){
             Message.errorAlert(this.resourceBundle,"FilterExtensionException");
-            return false;
-        }
-        try {
-            if(Integer.parseInt(minLength)<1) {
-                Message.errorAlert(this.resourceBundle, "MinLengthLimitException");
-                return false;
-            }
-        }catch (NumberFormatException e){
-            Message.errorAlert(this.resourceBundle,"MinLengthFormatException");
             return false;
         }
         return true;
@@ -180,7 +160,6 @@ public class SettingsController {
         this.questionMinLength.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.filterLbl.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.pathLbl.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
-        this.absolutePathRadBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.relativePathRadBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.questionPath.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
     };
