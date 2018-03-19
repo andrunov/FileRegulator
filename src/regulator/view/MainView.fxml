@@ -14,7 +14,7 @@
    <children>
       <BorderPane prefHeight="160.0" prefWidth="600.0" styleClass="background" stylesheets="@../style/Custom.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
-            <GridPane prefWidth="650.0" BorderPane.alignment="CENTER">
+            <GridPane prefWidth="600.0" BorderPane.alignment="CENTER">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="350.0" prefWidth="450.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="100.0" prefWidth="100.0" />
