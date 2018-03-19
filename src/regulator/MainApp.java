@@ -13,7 +13,6 @@ import javafx.stage.Stage;
 import regulator.controller.MainController;
 import regulator.controller.SettingsController;
 import regulator.util.AppPreferences;
-import regulator.util.FileFilter;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -83,11 +82,11 @@ public class MainApp extends Application {
     }
 
     /*open settings window*/
-    public void showSettingsEditDialog(ResourceBundle resourceBundle, FileFilter filter) {
+    public void showSettingsEditDialog(MainController parentController) {
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
-            loader.setResources(resourceBundle);
+            loader.setResources(parentController.getResourceBundle());
             loader.setLocation(MainApp.class.getResource("view/SettingsView.fxml"));
             AnchorPane page = (AnchorPane) loader.load();
 
@@ -102,9 +101,10 @@ public class MainApp extends Application {
             // create and adjust controller
             SettingsController controller = loader.getController();
             controller.setDialogStage(dialogStage);
-            controller.setFilter(filter);
+            controller.setFilter(parentController.getFilter());
             controller.setFieldsValues();
-            controller.setResourceBundle(resourceBundle);
+            controller.setResourceBundle(parentController.getResourceBundle());
+            controller.setMainController(parentController);
 
             dialogStage.heightProperty().addListener(controller.stageSizeListener);
             dialogStage.setWidth(AppPreferences.getSettingsWindowWidth());

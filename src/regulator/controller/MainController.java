@@ -101,6 +101,22 @@ public class MainController implements Initializable {
         this.mainApp = mainApp;
     }
 
+    public FileFilter getFilter() {
+        return filter;
+    }
+
+    public void setFilter(FileFilter filter) {
+        this.filter = filter;
+    }
+
+    public ResourceBundle getResourceBundle() {
+        return resourceBundle;
+    }
+
+    public void setResourceBundle(ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
+    }
+
     /*choose first directory*/
     @FXML
     private void choseDirectory(){
@@ -249,7 +265,7 @@ public class MainController implements Initializable {
     /*open settings window*/
     @FXML
     private void openSettings(){
-        mainApp.showSettingsEditDialog(this.resourceBundle, this.filter);
+        mainApp.showSettingsEditDialog(this);
     }
 
     /*show application info*/

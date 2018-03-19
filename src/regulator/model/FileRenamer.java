@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * Created by Admin on 31.01.2018.
+ * Class for scan folders and renames files
  */
 public class FileRenamer
 {
@@ -185,14 +185,15 @@ public class FileRenamer
     StringBuilder report = new StringBuilder();
         for (String fileName : new File(this.sourcePath).list()){
             String absPath = this.sourcePath + "\\" + fileName;
-            if (new File(absPath).isDirectory()){
-                report.append(new FileRenamer(absPath, this.filter.getExtensions(),this.resourceBundle).renameCycle());
-            }
-            else if (checkFileName(fileName)){
-                this.satisfyNames.add( fileName);
-                this.busyPositions.add(getPrefix(fileName));
-            }else {
-                this.unSatisfyNames.add(fileName);
+            if (this.filter.accept(absPath)) {
+                if (new File(absPath).isDirectory()) {
+                    report.append(new FileRenamer(absPath, this.filter.getExtensions(), this.resourceBundle).renameCycle());
+                } else if (checkFileName(fileName)) {
+                    this.satisfyNames.add(fileName);
+                    this.busyPositions.add(getPrefix(fileName));
+                } else {
+                    this.unSatisfyNames.add(fileName);
+                }
             }
         }
         renameAllFiles();
@@ -244,7 +245,7 @@ public class FileRenamer
         }
         sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Refuse") +" : " + this.fallingRenames.size() + " : " + this.resourceBundle.getString("files")),"*"));
         for (String fileName : this.fallingRenames){
-            sb.append(String.format("\r\n%-5s%-100.100s%2s","+",fileName, "*"));
+            sb.append(String.format("\r\n%-5s%-100.100s%2s","-",fileName, "*"));
         }
         sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Satysfied") +" : " + this.satisfyNames.size() + " : " + this.resourceBundle.getString("files")),"*"));
 //        for (String fileName : this.satisfyNames){

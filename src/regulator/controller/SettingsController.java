@@ -4,7 +4,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import regulator.util.AppPreferences;
@@ -20,6 +19,9 @@ public class SettingsController {
     /*window stage*/
     private Stage dialogStage;
 
+    /*link to parent program controller*/
+    private MainController mainController;
+
     /*file filter*/
     private FileFilter filter;
 
@@ -29,10 +31,6 @@ public class SettingsController {
     /*field for filter text*/
     @FXML
     private TextField filterTextField;
-
-    /*field for min length of word*/
-    @FXML
-    private TextField minLengthWordField;
 
     /*button for save settings and exit*/
     @FXML
@@ -46,25 +44,9 @@ public class SettingsController {
     @FXML
     private Button questionFilter;
 
-    /*button for info for min length field*/
-    @FXML
-    private Button questionMinLength;
-
-    /*button for info for radiobuttons absolutePathRadBtn and relativePathRadBtn*/
-    @FXML
-    private Button questionPath;
-
-    /*radio button for set relative path in report*/
-    @FXML
-    private RadioButton relativePathRadBtn;
-
     /*label for for filter field*/
     @FXML
     private Label filterLbl;
-
-    /*label for for radiobuttons absolutePathRadBtn and relativePathRadBtn*/
-    @FXML
-    private Label pathLbl;
 
     /*set language pocket*/
     public void setResourceBundle(ResourceBundle resourceBundle) {
@@ -83,6 +65,13 @@ public class SettingsController {
         }
     }
 
+    public MainController getMainController() {
+        return mainController;
+    }
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
 
     /**
      * set dialog stage for this window
@@ -113,6 +102,7 @@ public class SettingsController {
                 extensions = this.filterTextField.getText().split(" ");
             }
             this.filter = new FileFilter(extensions);
+            mainController.setFilter(this.filter);
             AppPreferences.setFilterExtensions(extensions);
             AppPreferences.setSettingsWindowHeight(this.dialogStage.getHeight());
             AppPreferences.setSettingsWindowWidth(this.dialogStage.getWidth());
@@ -153,15 +143,10 @@ public class SettingsController {
     {
         double height = this.dialogStage.getHeight();
         this.filterTextField.setStyle("-fx-font-size:"+ Formatter.getTextSize(height)+";");
-        this.minLengthWordField.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.saveBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.cancelBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.questionFilter.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
-        this.questionMinLength.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.filterLbl.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
-        this.pathLbl.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
-        this.relativePathRadBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
-        this.questionPath.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
     };
 
 }
