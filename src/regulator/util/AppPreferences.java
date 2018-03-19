@@ -44,24 +44,6 @@ public class AppPreferences {
         prefs.put("filterExtensions", Formatter.getArrayAsString(extensions));
     }
 
-
-    /*set minimum word length*/
-    public static void setMinStringLength(String minStringLength) {
-        Preferences prefs = Preferences.userNodeForPackage(AppPreferences.class);
-        prefs.put("minStringLength", minStringLength);
-    }
-
-    /*set mode of files paths in report*/
-    public static void setShowAbsolutePath(boolean showAbsolutePath) {
-        Preferences prefs = Preferences.userNodeForPackage(AppPreferences.class);
-        prefs.put("showAbsolutePath", String.valueOf(showAbsolutePath));
-    }
-
-    public static boolean getShowAbsolutePath(){
-        Preferences prefs = Preferences.userNodeForPackage(AppPreferences.class);
-        return Boolean.parseBoolean(prefs.get("showAbsolutePath","FALSE"));
-    }
-
     public static void setMainWindowWidth(Double width){
         Preferences prefs = Preferences.userNodeForPackage(AppPreferences.class);
         prefs.put("mainWindowWidth", String.valueOf(width));

@@ -247,7 +247,8 @@ public class FileRenamer
         for (String fileName : this.fallingRenames){
             sb.append(String.format("\r\n%-5s%-100.100s%2s","-",fileName, "*"));
         }
-        sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Satysfied") +" : " + this.satisfyNames.size() + " : " + this.resourceBundle.getString("files")),"*"));
+        sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Satisfied") +" : " + this.satisfyNames.size() + " : " + this.resourceBundle.getString("files")),"*"));
+        /*show all satisfied files disabled */
 //        for (String fileName : this.satisfyNames){
 //            sb.append(String.format("\r\n%-5s%-100.100s%2s","+",fileName, "*"));
 //        }
