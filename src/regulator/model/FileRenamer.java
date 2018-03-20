@@ -55,24 +55,35 @@ public class FileRenamer
         this.resourceBundle = resourceBundle;
     }
 
-    /*return second prefix of file, must contains number of files order (01, 36, 125)
-            * return 0 if no fit*/
+    /*return prefix of file, must contains number of files order (01, 36, 125)
+     * return 0 if no fit, return -1 if file has not rename */
     private int getPrefix(String fileName){
         int result = 0;
         try
         {
-            int lastIndex = findFirstSpace(fileName);
-            if (lastIndex==0){
-                lastIndex= findFirstLetter(fileName)-1;
-                lastIndex = lastIndex >=0 ? lastIndex : 0;
-            }
-            result = Integer.parseInt(fileName.substring(0, lastIndex));
+            int lastDotIndex = fileName.lastIndexOf('.');
+            int firstSpaceIndex = findFirstSpace(fileName);
+            int firstLetterIndex = findFirstLetter(fileName);
+            if (firstSpaceIndex == (firstLetterIndex-1)) {
+                String stringPrefix = fileName.substring(0, firstSpaceIndex);
+                result = checkPrefix(stringPrefix);
+            }else if(firstLetterIndex > lastDotIndex){
+                result = -1;
+            };
         }
         catch (NumberFormatException e)
         {
 //            e.printStackTrace();
         }
-        return result ;
+        return result;
+    }
+
+    /*check prefix */
+    private int checkPrefix(String stringPrefix) {
+        Integer intPrefix = Integer.parseInt(stringPrefix);
+        if (intPrefix<0) return 0;
+        String checkPrefix = intPrefix > 9 ? intPrefix.toString() : "0"+intPrefix.toString();
+        return stringPrefix.equals(checkPrefix)? intPrefix : 0;
     }
 
     /*get fileName's postfix*/
@@ -129,8 +140,10 @@ public class FileRenamer
     private void createPostfix(){
         String result = this.sourcePath.substring(this.sourcePath.lastIndexOf('\\')+1);
         try {
-            Integer.parseInt(result);
-            this.postfix = "(" + result + ")";
+            int year = Integer.parseInt(result);
+            if ((year >= 0)&&(year <= 2050)) {
+                this.postfix = "(" + result + ")";
+            }
         }
         catch (NumberFormatException e){
             this.postfix = null;
@@ -188,11 +201,8 @@ public class FileRenamer
             if (this.filter.accept(absPath)) {
                 if (new File(absPath).isDirectory()) {
                     report.append(new FileRenamer(absPath, this.filter.getExtensions(), this.resourceBundle).renameCycle());
-                } else if (checkFileName(fileName)) {
-                    this.satisfyNames.add(fileName);
-                    this.busyPositions.add(getPrefix(fileName));
                 } else {
-                    this.unSatisfyNames.add(fileName);
+                    checkFileName(fileName);
                 }
             }
         }
@@ -222,23 +232,28 @@ public class FileRenamer
     }
 
     /*check that filename has required pre- and post-fix*/
-    private boolean checkFileName(String fileName)
+    private void checkFileName(String fileName)
     {
-        boolean result;
         int prefix = getPrefix(fileName);
-        result = ((prefix > 0)&&(!this.busyPositions.contains(prefix)));
+        boolean criteria = ((prefix > 0)&&(!this.busyPositions.contains(prefix)));
         if (this.postfix != null){
             String postFix = getPostfix(fileName);
-            result =  result&&(postFix.equals(this.postfix));
+            criteria =  criteria&&(postFix.equals(this.postfix));
         }
-        return result;
+        if (criteria){
+            this.satisfyNames.add(fileName);
+            this.busyPositions.add(prefix);
+        }else {
+            if (prefix >= 0) this.unSatisfyNames.add(fileName);
+            else this.fallingRenames.add(fileName);
+        }
     }
 
     /*write result of rename files */
     private StringBuilder writeResult(){
         StringBuilder sb = new StringBuilder("***********************************************************************************************************");
         sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Folder") +" : " + this.sourcePath),"*"));
-        sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Analyzed") + " : " + (this.satisfyNames.size()+ this.unSatisfyNames.size()) + " : " + this.resourceBundle.getString("files")),"*"));
+        sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Analyzed") + " : " + (this.satisfyNames.size()+ this.unSatisfyNames.size()+this.fallingRenames.size()) + " : " + this.resourceBundle.getString("files")),"*"));
         sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Renamed") +" : " + this.successRenames.size() + " : " + this.resourceBundle.getString("files")),"*"));
         for (String fileName : this.successRenames){
             sb.append(String.format("\r\n%-5s%-100.100s%2s","+",fileName, "*"));
