@@ -221,7 +221,7 @@ public class FileRenamer
                 if (renameFile(fileName,newFileName))
                 {
                     this.busyPositions.add(getPrefix(newFileName));
-                    this.successRenames.add(String.format("%s %s %s",fileName,"==>" , newFileName));
+                    this.successRenames.add(String.format("%-76.76s %-76.76s",fileName, newFileName));
                 }
             }
             catch (IOException e)
@@ -251,24 +251,40 @@ public class FileRenamer
 
     /*write result of rename files */
     private StringBuilder writeResult(){
-        StringBuilder sb = new StringBuilder("***********************************************************************************************************");
-        sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Folder") +" : " + this.sourcePath),"*"));
-        sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Analyzed") + " : " + (this.satisfyNames.size()+ this.unSatisfyNames.size()+this.fallingRenames.size()) + " : " + this.resourceBundle.getString("files")),"*"));
-        sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Renamed") +" : " + this.successRenames.size() + " : " + this.resourceBundle.getString("files")),"*"));
-        for (String fileName : this.successRenames){
-            sb.append(String.format("\r\n%-5s%-100.100s%2s","+",fileName, "*"));
+        StringBuilder sb = new StringBuilder();
+        if (this.successRenames.size()==0) {
+            sb.append("********************************************************************************");
+            sb.append(String.format("\r\n%-2s%-76.76s%2s", "*", (this.resourceBundle.getString("Folder") + " : " + this.sourcePath), "*"));
+            sb.append(String.format("\r\n%-2s%-76.76s%2s", "*", (this.resourceBundle.getString("Analyzed") + " : " + (this.satisfyNames.size() + this.unSatisfyNames.size() + this.fallingRenames.size()) + " : " + this.resourceBundle.getString("files")), "*"));
+            sb.append(String.format("\r\n%-2s%-76.76s%2s", "*", (this.resourceBundle.getString("Renamed") + " : " + this.successRenames.size() + " : " + this.resourceBundle.getString("files")), "*"));
+            sb.append(String.format("\r\n%-2s%-76.76s%2s", "*", (this.resourceBundle.getString("Refuse") + " : " + this.fallingRenames.size() + " : " + this.resourceBundle.getString("files")), "*"));
+            for (String fileName : this.fallingRenames) {
+                sb.append(String.format("\r\n%-5s%-73.73s%2s", "-", fileName, "*"));
+            }
+            sb.append(String.format("\r\n%-2s%-76.76s%2s", "*", (this.resourceBundle.getString("Satisfied") + " : " + this.satisfyNames.size() + " : " + this.resourceBundle.getString("files")), "*"));
+            sb.append("\r\n********************************************************************************");
+            sb.append("\r\n");
+        }else {
+            sb.append("****************************************************************************************************************************************************************");
+            sb.append(String.format("\r\n%-2s%-156.156s%2s", "*", (this.resourceBundle.getString("Folder") + " : " + this.sourcePath), "*"));
+            sb.append(String.format("\r\n%-2s%-156.156s%2s", "*", (this.resourceBundle.getString("Analyzed") + " : " + (this.satisfyNames.size() + this.unSatisfyNames.size() + this.fallingRenames.size()) + " : " + this.resourceBundle.getString("files")), "*"));
+            sb.append(String.format("\r\n%-2s%-156.156s%2s", "*", (this.resourceBundle.getString("Renamed") + " : " + this.successRenames.size() + " : " + this.resourceBundle.getString("files")), "*"));
+            sb.append("\r\n*--------------------------------------------------------------------------------------------------------------------------------------------------------------*");
+            for (String fileName : this.successRenames) {
+                sb.append(String.format("\r\n%-3s%-155.155s%2s", "*", fileName, "*"));
+                sb.append("\r\n*--------------------------------------------------------------------------------------------------------------------------------------------------------------*");
+            }
+            sb.append(String.format("\r\n%-2s%-156.156s%2s", "*", (this.resourceBundle.getString("Refuse") + " : " + this.fallingRenames.size() + " : " + this.resourceBundle.getString("files")), "*"));
+            for (String fileName : this.fallingRenames) {
+                sb.append(String.format("\r\n%-5s%-154.154s%2s", "-", fileName, "*"));
+            }
+            sb.append(String.format("\r\n%-2s%-156.156s%2s", "*", (this.resourceBundle.getString("Satisfied") + " : " + this.satisfyNames.size() + " : " + this.resourceBundle.getString("files")), "*"));
+            sb.append("\r\n****************************************************************************************************************************************************************");
+            sb.append("\r\n");
         }
-        sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Refuse") +" : " + this.fallingRenames.size() + " : " + this.resourceBundle.getString("files")),"*"));
-        for (String fileName : this.fallingRenames){
-            sb.append(String.format("\r\n%-5s%-100.100s%2s","-",fileName, "*"));
-        }
-        sb.append(String.format("\r\n%-2s%-100.100s%5s","*",(this.resourceBundle.getString("Satisfied") +" : " + this.satisfyNames.size() + " : " + this.resourceBundle.getString("files")),"*"));
-        /*show all satisfied files disabled */
-//        for (String fileName : this.satisfyNames){
-//            sb.append(String.format("\r\n%-5s%-100.100s%2s","+",fileName, "*"));
-//        }
-        sb.append("\r\n***********************************************************************************************************");
-        sb.append("\r\n");
+
+
+
         return sb;
     }
 
