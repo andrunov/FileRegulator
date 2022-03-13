@@ -57,7 +57,7 @@
                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
                      </GridPane.margin>
                   </Button>
-                  <Label fx:id="infoLbl" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="10.0" prefHeight="66.0" prefWidth="590.0" text="%InfoDefault" GridPane.rowIndex="2">
+                  <Label fx:id="infoLbl" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="10.0" prefHeight="66.0" prefWidth="590.0" text="%InfoDefault" GridPane.rowIndex="2" GridPane.rowSpan="2">
                      <GridPane.margin>
                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
                      </GridPane.margin></Label>
@@ -78,16 +78,11 @@
                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
                      </GridPane.margin>
                   </Button>
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="10.0" mnemonicParsing="false" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="10.0" mnemonicParsing="false" text="%Randomize" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
                      </GridPane.margin>
                   </Button>
-                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="10.0" prefHeight="66.0" prefWidth="590.0" text="Label" GridPane.rowIndex="3">
-                     <GridPane.margin>
-                        <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
-                     </GridPane.margin>
-                  </Label>
                </children>
                <BorderPane.margin>
                   <Insets bottom="5.0" top="5.0" />
