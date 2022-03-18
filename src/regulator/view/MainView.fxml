@@ -78,7 +78,7 @@
                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
                      </GridPane.margin>
                   </Button>
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="10.0" mnemonicParsing="false" text="%Randomize" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                  <Button fx:id="randomizeButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="10.0" mnemonicParsing="false" onAction="#executeRandomize" text="%Randomize" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
                      </GridPane.margin>

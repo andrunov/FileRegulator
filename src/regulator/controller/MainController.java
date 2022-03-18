@@ -47,6 +47,10 @@ public class MainController implements Initializable {
     @FXML
     private Button executeButton;
 
+    /*button for start randomizing procedure*/
+    @FXML
+    private Button randomizeButton;
+
     /*button for exit application*/
     @FXML
     private Button openResultBtn;
@@ -156,6 +160,11 @@ public class MainController implements Initializable {
 
     }
 
+    @FXML
+    private void executeRandomize(){
+
+    }
+
     /*open dialog to choose directory*/
     private File chooseDirectory() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -190,6 +199,7 @@ public class MainController implements Initializable {
         this.firstDirSelectBtn.setText(this.resourceBundle.getString("Select"));
         this.changeLocalButton.setText(this.resourceBundle.getString("ChangeLocal"));
         this.executeButton.setText(this.resourceBundle.getString("Regulate"));
+        this.randomizeButton.setText(this.resourceBundle.getString("Randomize"));
         this.clearBtn.setText(this.resourceBundle.getString("Clear"));
         this.openResultBtn.setText(this.resourceBundle.getString("Open"));
         this.settingsBtn.setText(this.resourceBundle.getString("Settings"));
@@ -290,6 +300,7 @@ public class MainController implements Initializable {
         this.firstDirSelectBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.changeLocalButton.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.executeButton.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
+        this.randomizeButton.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.openResultBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.clearBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.settingsBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
