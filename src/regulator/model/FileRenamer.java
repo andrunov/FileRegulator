@@ -5,9 +5,7 @@ import regulator.util.Writer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Class for scan folders and renames files
@@ -39,6 +37,8 @@ public class FileRenamer
     /*list of files with unsatisfied names*/
     private List<String> unSatisfyNames;
 
+    private List<FileInfo> randomized;
+
     /*filter of file types*/
     private FileFilter filter;
 
@@ -50,6 +50,7 @@ public class FileRenamer
         this.successRenames = new ArrayList<>();
         this.satisfyNames = new ArrayList<>();
         this.unSatisfyNames = new ArrayList<>();
+        this.randomized = new ArrayList<>();
         this.createPostfix();
         this.filter = new FileFilter(extensions);
         this.resourceBundle = resourceBundle;
@@ -160,6 +161,20 @@ public class FileRenamer
         return file.renameTo(file2);
     }
 
+    /*rename file to new name*/
+    private boolean renameFileForRandomize(String oldFileName, String newFileName) throws IOException
+    {
+        File file = new File(this.sourcePath + "\\" + oldFileName);
+        File file2 = new File(this.sourcePath + "\\" + newFileName);
+        if (file2.exists()) {
+            this.satisfyNames.add(oldFileName);
+            this.busyPositions.add(getPrefix(oldFileName));
+            return false;
+        } else {
+            return file.renameTo(file2);
+        }
+    }
+
 
     /*gets old file name and create new file name*/
     private String getNewFileName(String oldFileName)
@@ -188,25 +203,50 @@ public class FileRenamer
     }
 
     /* method for start program logic from outside */
-    public void execute(String reportPath){
+    public void executeRegulate(String reportPath){
         Writer writer = new Writer("UTF8",reportPath);
-        writer.write(this.renameCycle().toString(), this.resourceBundle);
+        writer.write(this.regulateCycle().toString(), this.resourceBundle);
+    }
+
+    /* method for start program logic from outside */
+    public void executeRandomize(String reportPath){
+        Writer writer = new Writer("UTF8",reportPath);
+        writer.write(this.randomizeCycle().toString(), this.resourceBundle);
     }
 
     /*main cycle of program. Recursive select, check and renames all files in selected folders*/
-    private StringBuilder renameCycle(){
+    private StringBuilder regulateCycle(){
     StringBuilder report = new StringBuilder();
         for (String fileName : new File(this.sourcePath).list()){
             String absPath = this.sourcePath + "\\" + fileName;
             if (this.filter.accept(absPath)) {
                 if (new File(absPath).isDirectory()) {
-                    report.append(new FileRenamer(absPath, this.filter.getExtensions(), this.resourceBundle).renameCycle());
+                    report.append(new FileRenamer(absPath, this.filter.getExtensions(), this.resourceBundle).regulateCycle());
                 } else {
                     checkFileName(fileName);
                 }
             }
         }
         renameAllFiles();
+        report.append(writeResult()).append("\r\n");
+        return report;
+    }
+
+    /*main cycle of program. Recursive select, check and renames all files in selected folders*/
+    private StringBuilder randomizeCycle(){
+        StringBuilder report = new StringBuilder();
+        Random random = new Random(System.currentTimeMillis());
+        for (String fileName : new File(this.sourcePath).list()){
+            String absPath = this.sourcePath + "\\" + fileName;
+            if (this.filter.accept(absPath)) {
+                if (new File(absPath).isDirectory()) {
+                    report.append(new FileRenamer(absPath, this.filter.getExtensions(), this.resourceBundle).randomizeCycle());
+                } else {
+                    this.randomized.add(new FileInfo(random.nextInt(), fileName));
+                }
+            }
+        }
+        randomizeAllFiles();
         report.append(writeResult()).append("\r\n");
         return report;
     }
@@ -219,6 +259,27 @@ public class FileRenamer
             try
             {
                 if (renameFile(fileName,newFileName))
+                {
+                    this.busyPositions.add(getPrefix(newFileName));
+                    this.successRenames.add(String.format("%-76.76s %-76.76s",fileName, newFileName));
+                }
+            }
+            catch (IOException e)
+            {
+                this.fallingRenames.add(fileName);
+            }
+        }
+    }
+
+    /*set for all files in list new numbers in pre-set random order*/
+    private void randomizeAllFiles(){
+        Collections.sort(this.randomized);
+        for (FileInfo fileInfo : this.randomized){
+            String fileName = fileInfo.getName();
+            String newFileName = getNewFileName(fileInfo.getName());
+            try
+            {
+                if (renameFileForRandomize(fileName,newFileName))
                 {
                     this.busyPositions.add(getPrefix(newFileName));
                     this.successRenames.add(String.format("%-76.76s %-76.76s",fileName, newFileName));

@@ -149,7 +149,7 @@ public class MainController implements Initializable {
                                             this.filter.getExtensions(),
                                             this.resourceBundle);
             try{
-                renamer.execute(this.reportName);
+                renamer.executeRegulate(this.reportName);
                 setTextDirLabel(this.resultLbl, "Result", getFileInfo(this.reportName));
                 setVisibility(true);
             }
@@ -157,12 +157,24 @@ public class MainController implements Initializable {
                 Message.errorAlert(this.resourceBundle,e);
             }
         }
-
     }
 
+    /*start randomize procedure*/
     @FXML
     private void executeRandomize(){
-
+        if (this.directory != null) {
+            FileRenamer renamer = new FileRenamer(this.directory.getAbsolutePath(),
+                    this.filter.getExtensions(),
+                    this.resourceBundle);
+            try{
+                renamer.executeRandomize(this.reportName);
+                setTextDirLabel(this.resultLbl, "Result", getFileInfo(this.reportName));
+                setVisibility(true);
+            }
+            catch (Exception e){
+                Message.errorAlert(this.resourceBundle,e);
+            }
+        }
     }
 
     /*open dialog to choose directory*/
