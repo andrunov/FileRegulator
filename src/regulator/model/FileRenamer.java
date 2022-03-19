@@ -161,20 +161,6 @@ public class FileRenamer
         return file.renameTo(file2);
     }
 
-    /*rename file to new name*/
-    private boolean renameFileForRandomize(String oldFileName, String newFileName) throws IOException
-    {
-        File file = new File(this.sourcePath + "\\" + oldFileName);
-        File file2 = new File(this.sourcePath + "\\" + newFileName);
-        if (file2.exists()) {
-            this.satisfyNames.add(oldFileName);
-            this.busyPositions.add(getPrefix(oldFileName));
-            return false;
-        } else {
-            return file.renameTo(file2);
-        }
-    }
-
 
     /*gets old file name and create new file name*/
     private String getNewFileName(String oldFileName)
@@ -184,6 +170,23 @@ public class FileRenamer
         String name = oldFileName.substring(0,oldFileName.lastIndexOf('.'));
         name = name.substring(findFirstLetter(name));
         int prefix = createNewPrefix();
+        if ((this.postfix == null)||(getPostfix(oldFileName).equals(this.postfix))){
+            result = String.format("%02d %s%s",prefix, name, extension);
+        }else {
+            result = String.format("%02d %s %s%s",prefix, name, this.postfix, extension);
+        }
+        return result;
+    }
+
+    /*gets old file name and create new file name*/
+    private String getNewFileName(FileInfo fileInfo)
+    {
+        String result;
+        String oldFileName = fileInfo.getName();
+        String extension = oldFileName.substring(oldFileName.lastIndexOf('.'));
+        String name = oldFileName.substring(0,oldFileName.lastIndexOf('.'));
+        name = name.substring(findFirstLetter(name));
+        int prefix = fileInfo.getNumber();
         if ((this.postfix == null)||(getPostfix(oldFileName).equals(this.postfix))){
             result = String.format("%02d %s%s",prefix, name, extension);
         }else {
@@ -246,6 +249,19 @@ public class FileRenamer
                 }
             }
         }
+        Collections.sort(this.randomized);
+        int counter = 0;
+        Iterator<FileInfo> infoIterator = this.randomized.iterator();
+        while (infoIterator.hasNext()){
+        FileInfo fileInfo = infoIterator.next();
+            counter++;
+            if ((getPrefix(fileInfo.getName())) == counter) {
+                this.satisfyNames.add(fileInfo.getName());
+                infoIterator.remove();
+            } else {
+                fileInfo.setNumber(counter);
+            }
+        }
         randomizeAllFiles();
         report.append(writeResult()).append("\r\n");
         return report;
@@ -273,13 +289,12 @@ public class FileRenamer
 
     /*set for all files in list new numbers in pre-set random order*/
     private void randomizeAllFiles(){
-        Collections.sort(this.randomized);
-        for (FileInfo fileInfo : this.randomized){
+       for (FileInfo fileInfo : this.randomized){
             String fileName = fileInfo.getName();
-            String newFileName = getNewFileName(fileInfo.getName());
+            String newFileName = getNewFileName(fileInfo);
             try
             {
-                if (renameFileForRandomize(fileName,newFileName))
+                if (renameFile(fileName,newFileName))
                 {
                     this.busyPositions.add(getPrefix(newFileName));
                     this.successRenames.add(String.format("%-76.76s %-76.76s",fileName, newFileName));
