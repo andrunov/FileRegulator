@@ -331,7 +331,13 @@ public class FileRenamer
         if (this.successRenames.size()==0) {
             sb.append("********************************************************************************");
             sb.append(String.format("\r\n%-2s%-76.76s%2s", "*", (this.resourceBundle.getString("Folder") + " : " + this.sourcePath), "*"));
-            sb.append(String.format("\r\n%-2s%-76.76s%2s", "*", (this.resourceBundle.getString("Analyzed") + " : " + (this.satisfyNames.size() + this.unSatisfyNames.size() + this.fallingRenames.size()) + " : " + this.resourceBundle.getString("files")), "*"));
+            sb.append(String.format("\r\n%-2s%-76.76s%2s", "*", (this.resourceBundle.getString("Analyzed") + " : "
+                                                                                    + (this.satisfyNames.size()
+                                                                                    + this.unSatisfyNames.size()
+                                                                                    + this.fallingRenames.size()
+                                                                                    + this.successRenames.size())
+                                                                                    + " : " + this.resourceBundle.getString("files")), "*"));
+
             sb.append(String.format("\r\n%-2s%-76.76s%2s", "*", (this.resourceBundle.getString("Renamed") + " : " + this.successRenames.size() + " : " + this.resourceBundle.getString("files")), "*"));
             sb.append(String.format("\r\n%-2s%-76.76s%2s", "*", (this.resourceBundle.getString("Refuse") + " : " + this.fallingRenames.size() + " : " + this.resourceBundle.getString("files")), "*"));
             for (String fileName : this.fallingRenames) {
@@ -343,7 +349,13 @@ public class FileRenamer
         }else {
             sb.append("****************************************************************************************************************************************************************");
             sb.append(String.format("\r\n%-2s%-156.156s%2s", "*", (this.resourceBundle.getString("Folder") + " : " + this.sourcePath), "*"));
-            sb.append(String.format("\r\n%-2s%-156.156s%2s", "*", (this.resourceBundle.getString("Analyzed") + " : " + (this.satisfyNames.size() + this.unSatisfyNames.size() + this.fallingRenames.size()) + " : " + this.resourceBundle.getString("files")), "*"));
+            sb.append(String.format("\r\n%-2s%-156.156s%2s", "*", (this.resourceBundle.getString("Analyzed") + " : "
+                                                                                        + (this.satisfyNames.size()
+                                                                                        + this.unSatisfyNames.size()
+                                                                                        + this.fallingRenames.size()
+                                                                                        + this.successRenames.size())
+                                                                                        + " : " + this.resourceBundle.getString("files")), "*"));
+
             sb.append(String.format("\r\n%-2s%-156.156s%2s", "*", (this.resourceBundle.getString("Renamed") + " : " + this.successRenames.size() + " : " + this.resourceBundle.getString("files")), "*"));
             sb.append("\r\n*--------------------------------------------------------------------------------------------------------------------------------------------------------------*");
             for (String fileName : this.successRenames) {
