@@ -31,6 +31,10 @@ public class MainController implements Initializable {
     @FXML
     private Label infoLbl;
 
+    /*randomize label*/
+    @FXML
+    private Label randomizeLabel;
+
     /*result label*/
     @FXML
     private Label resultLbl;
@@ -232,6 +236,7 @@ public class MainController implements Initializable {
         }
         else {
             infoLbl.setText(resourceBundle.getString("NormaliseFiles"));
+            randomizeLabel.setText(resourceBundle.getString("RandomizeFiles"));
         }
     }
 
@@ -308,6 +313,7 @@ public class MainController implements Initializable {
         double height = this.mainApp.getPrimaryStage().getHeight();
         this.dirLbl.setStyle("-fx-font-size:"+ Formatter.getTextSize(height)+";");
         this.infoLbl.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
+        this.randomizeLabel.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.resultLbl.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.firstDirSelectBtn.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
         this.changeLocalButton.setStyle("-fx-font-size:"+Formatter.getTextSize(height)+";");
