@@ -1,6 +1,7 @@
 package regulator.model;
 
 import regulator.util.FileFilter;
+import regulator.util.Util;
 import regulator.util.Writer;
 
 import java.io.File;
@@ -243,15 +244,14 @@ public class FileRenamer
         StringBuilder report = new StringBuilder();
         Random random = new Random(System.currentTimeMillis());
         String[] fileList = new File(this.sourcePath).list();
-        int maxNumber = fileList.length;
-        dimension = Integer.valueOf(maxNumber).toString().length();
+        dimension = Util.getDimension(fileList.length);
         for (String fileName : fileList) {
             String absPath = this.sourcePath + "\\" + fileName;
             if (this.filter.accept(absPath)) {
                 if (new File(absPath).isDirectory()) {
                     report.append(new FileRenamer(absPath, this.filter.getExtensions(), this.resourceBundle).randomizeCycle());
                 } else {
-                    this.randomized.add(new FileInfo(random.nextInt(maxNumber), fileName));
+                    this.randomized.add(new FileInfo(random.nextInt(Integer.MAX_VALUE), fileName));
                 }
             }
         }
@@ -264,16 +264,8 @@ public class FileRenamer
     private void numerateAllFiles() {
         Collections.sort(this.randomized);
         int counter = 0;
-        Iterator<FileInfo> infoIterator = this.randomized.iterator();
-        while (infoIterator.hasNext()){
-            FileInfo fileInfo = infoIterator.next();
-            counter++;
-            if (fileInfo.getNumber() == counter) {
-                this.satisfyNames.add(fileInfo.getName());
-                infoIterator.remove();
-            } else {
-                fileInfo.setNumber(counter);
-            }
+        for (FileInfo fileInfo : this.randomized) {
+            fileInfo.setNumber(++counter);
         }
     }
 
