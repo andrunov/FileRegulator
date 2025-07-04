@@ -42,6 +42,9 @@ public class FileRenamer
     /*filter of file types*/
     private FileFilter filter;
 
+    /*files in directory size*/
+    private int dimension;
+
     /*constructor*/
     public FileRenamer(String sourcePath, String[] extensions, ResourceBundle resourceBundle) {
         this.sourcePath = sourcePath;
@@ -188,9 +191,9 @@ public class FileRenamer
         name = name.substring(findFirstLetter(name));
         int prefix = fileInfo.getNumber();
         if ((this.postfix == null)||(getPostfix(oldFileName).equals(this.postfix))){
-            result = String.format("%02d %s%s",prefix, name, extension);
+            result = String.format("%0" + dimension + "d %s%s",prefix, name, extension);
         }else {
-            result = String.format("%02d %s %s%s",prefix, name, this.postfix, extension);
+            result = String.format("%0" + dimension + "d %s %s%s",prefix, name, this.postfix, extension);
         }
         return result;
     }
@@ -239,32 +242,39 @@ public class FileRenamer
     private StringBuilder randomizeCycle(){
         StringBuilder report = new StringBuilder();
         Random random = new Random(System.currentTimeMillis());
-        for (String fileName : new File(this.sourcePath).list()){
+        String[] fileList = new File(this.sourcePath).list();
+        int maxNumber = fileList.length;
+        dimension = Integer.valueOf(maxNumber).toString().length();
+        for (String fileName : fileList) {
             String absPath = this.sourcePath + "\\" + fileName;
             if (this.filter.accept(absPath)) {
                 if (new File(absPath).isDirectory()) {
                     report.append(new FileRenamer(absPath, this.filter.getExtensions(), this.resourceBundle).randomizeCycle());
                 } else {
-                    this.randomized.add(new FileInfo(random.nextInt(), fileName));
+                    this.randomized.add(new FileInfo(random.nextInt(maxNumber), fileName));
                 }
             }
         }
+        numerateAllFiles();
+        renameAllRandomized();
+        report.append(writeResult()).append("\r\n");
+        return report;
+    }
+
+    private void numerateAllFiles() {
         Collections.sort(this.randomized);
         int counter = 0;
         Iterator<FileInfo> infoIterator = this.randomized.iterator();
         while (infoIterator.hasNext()){
-        FileInfo fileInfo = infoIterator.next();
+            FileInfo fileInfo = infoIterator.next();
             counter++;
-            if ((getPrefix(fileInfo.getName())) == counter) {
+            if (fileInfo.getNumber() == counter) {
                 this.satisfyNames.add(fileInfo.getName());
                 infoIterator.remove();
             } else {
                 fileInfo.setNumber(counter);
             }
         }
-        randomizeAllFiles();
-        report.append(writeResult()).append("\r\n");
-        return report;
     }
 
 
@@ -288,23 +298,26 @@ public class FileRenamer
     }
 
     /*set for all files in list new numbers in pre-set random order*/
-    private void randomizeAllFiles(){
-       for (FileInfo fileInfo : this.randomized){
-            String fileName = fileInfo.getName();
-            String newFileName = getNewFileName(fileInfo);
-            try
-            {
-                if (renameFile(fileName,newFileName))
-                {
-                    this.busyPositions.add(getPrefix(newFileName));
-                    this.successRenames.add(String.format("%-76.76s %-76.76s",fileName, newFileName));
-                }
-            }
-            catch (IOException e)
-            {
-                this.fallingRenames.add(fileName);
-            }
-        }
+    private void renameAllRandomized(){
+       for (FileInfo fileInfo : this.randomized) {
+           String fileName = fileInfo.getName();
+           String newFileName = getNewFileName(fileInfo);
+
+           if (fileName.equals(newFileName)) {
+               this.satisfyNames.add(fileInfo.getName());
+               this.busyPositions.add(fileInfo.getNumber());
+
+           } else {
+               try {
+                   if (renameFile(fileName, newFileName)) {
+                       this.busyPositions.add(getPrefix(newFileName));
+                       this.successRenames.add(String.format("%-76.76s %-76.76s", fileName, newFileName));
+                   }
+               } catch (IOException e) {
+                   this.fallingRenames.add(fileName);
+               }
+           }
+       }
     }
 
     /*check that filename has required pre- and post-fix*/
