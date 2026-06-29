@@ -1,6 +1,5 @@
 package regulator.controller;
 
-
 import regulator.MainApp;
 import regulator.model.FileRenamer;
 import regulator.util.AppPreferences;
@@ -20,7 +19,7 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-/*controller for MainView.fxml window*/
+/*regulator.controller for MainView.fxml window*/
 public class MainController implements Initializable {
 
     /*label of first directory*/
@@ -202,9 +201,9 @@ public class MainController implements Initializable {
     @FXML
     private void changeLocale(){
         if (this.resourceBundle.getLocale().getLanguage().equalsIgnoreCase("ru")){
-            this.resourceBundle = ResourceBundle.getBundle("regulator.resources.bundles.Locale",new Locale("en"));
+            this.resourceBundle = ResourceBundle.getBundle("regulator.bundles.Locale",new Locale("en"));
         }else {
-            this.resourceBundle = ResourceBundle.getBundle("regulator.resources.bundles.Locale",new Locale("ru"));
+            this.resourceBundle = ResourceBundle.getBundle("regulator.bundles.Locale",new Locale("ru"));
         }
         updateLocalText();
     }

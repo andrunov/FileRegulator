@@ -19,7 +19,7 @@ public class SettingsController {
     /*window stage*/
     private Stage dialogStage;
 
-    /*link to parent program controller*/
+    /*link to parent program regulator.controller*/
     private MainController mainController;
 
     /*file filter*/
