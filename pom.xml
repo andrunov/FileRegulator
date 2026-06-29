@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>FileRegulator</groupId>
-    <artifactId>FileRegulator</artifactId>
+    <artifactId>FileRegulator-java8</artifactId>
     <version>1.1</version>
     <name>FileRegulator</name>
 
