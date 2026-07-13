@@ -38,7 +38,7 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Directory compares");
+        this.primaryStage.setTitle("Sort files");
         this.primaryStage.getIcons().add(new Image(String.valueOf(MainApp.class.getResource("/regulator/images/appImage.png"))));
         initRootLayout(new Locale("ru","RU"));
         this.primaryStage.heightProperty().addListener(mainController.stageSizeListener);
